@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #FAF9F6;
+  --bg-card: #FFFFFF;
+  --bg-secondary: #F4F2EC;
+  --text-primary: #141416;
+  --text-secondary: #52525C;
+  --text-muted: #737380;
+  --color-gold: #C5A059;
+  --color-gold-dark: #87692A;
+  --color-ruby: #6A0D18;
+  --border-color: #EBE8DF;
+  --border-gold: rgba(197, 160, 89, 0.35);
+  --shadow-pedestal: 0 20px 50px -15px rgba(197, 160, 89, 0.12), 0 10px 30px -10px rgba(20, 20, 22, 0.06);
+}
+
+@keyframes ken-burns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(-1%, -1%);
+  }
+}
+.animate-ken-burns {
+  animation: ken-burns 22s ease-in-out infinite alternate;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+::selection {
+  background-color: var(--color-ruby);
+  color: #FAF9F6;
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-dark);
+}
+
+/* Typography Enhancements */
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-amiri {
+  font-family: 'Amiri', serif;
+}
+
+/* Subtle Shimmer & Gold Gradients */
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--color-gold-dark) 40%, var(--color-gold) 70%, #644D1B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gold-metallic {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Theme Adaptive Utility Classes */
+.theme-bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.theme-bg-card {
+  background-color: var(--bg-card);
+}
+
+.theme-bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.theme-text-primary {
+  color: var(--text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--text-muted);
+}
+
+.theme-border {
+  border-color: var(--border-color);
+}
+
+.theme-border-gold {
+  border-color: var(--border-gold);
+}
+
+.theme-shadow-pedestal {
+  box-shadow: var(--shadow-pedestal);
+}
