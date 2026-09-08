@@ -105,11 +105,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div>
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase tracking-[0.22em] text-[#87692A] font-sans font-semibold">
-                  {product.subCategory}
+                  {product.concentrationVolume || product.subCategory}
                 </span>
-                <span className="font-arabic text-sm theme-text-muted">
-                  {product.arabicName}
-                </span>
+                <div className="flex items-baseline space-x-1.5">
+                  <span className="font-serif text-lg font-bold theme-text-primary">
+                    {product.price ? product.price.toFixed(3) : '45.000'}
+                  </span>
+                  <span className="text-[10px] uppercase font-sans font-bold text-[#87692A]">
+                    KWD
+                  </span>
+                </div>
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold theme-text-primary mt-1">
                 {product.name}

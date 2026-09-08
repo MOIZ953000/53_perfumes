@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FragranceProduct } from '../types/fragrance';
-import { Sparkles, MessageSquare, Compass } from 'lucide-react';
+import { Eye, ShoppingBag, Check, Sparkles } from 'lucide-react';
 
 interface ProductCardProps {
   product: FragranceProduct;
@@ -8,25 +8,35 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) => {
-  const handleEnquire = (e: React.MouseEvent) => {
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleQuickView = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const text = encodeURIComponent(
-      `Hello Treppan Fragrance, I would like to enquire about ${product.name} (${product.volume}).`
-    );
-    window.open(`https://wa.me/96599995353?text=${text}`, '_blank');
+    onSelect(product);
+  };
+
+  const handleAddToBag = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsAdded(true);
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 1800);
   };
 
   return (
     <div
       onClick={() => onSelect(product)}
-      className="group relative theme-bg-card rounded-md border theme-border hover:border-[#C5A059] shadow-sm hover:shadow-pedestal transition-all duration-500 flex flex-col justify-between overflow-hidden cursor-pointer"
+      className="group relative h-full flex flex-col justify-between theme-bg-card rounded-xs border theme-border hover:theme-border-gold transition-all duration-300 overflow-hidden cursor-pointer shadow-xs hover:shadow-gold-glow hover:-translate-y-1 select-none"
     >
-      {/* Top Media Container */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden theme-bg-secondary p-6 flex items-center justify-center">
+      {/* Bottle Presentation Container: Warm Luxury Alabaster Backdrop */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-b from-[#FAF9F6] via-[#F4F2EC] to-[#EBE8DF] p-6 sm:p-8 flex items-center justify-center transition-colors duration-500">
         
-        {/* Badges */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start">
-          <span className="text-[9px] font-serif uppercase tracking-[0.2em] font-bold px-2 py-0.5 rounded-xs bg-[#6A0D18] text-[#FAF9F6]">
+        {/* Soft Radial Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.65)_0%,transparent_70%)] pointer-events-none" />
+
+        {/* Badge & Category */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col items-start gap-1">
+          <span className="text-[9px] uppercase tracking-widest font-serif font-bold px-2 py-0.5 rounded-xs bg-[#141416] text-[#FAF9F6]">
             {product.badge}
           </span>
           {product.category === 'aqua-parfum' && (
@@ -46,80 +56,57 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
           </div>
         )}
 
-        {/* Product Photograph */}
+        {/* Perfume Bottle Photograph */}
         <img
           src={product.image}
           alt={product.name}
-          className="max-h-[85%] max-w-[85%] object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="max-h-[85%] max-w-[85%] object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.14)] transform group-hover:scale-105 transition-transform duration-700 ease-out"
           loading="lazy"
         />
 
-        {/* Hover Quick Action Drawer */}
-        <div className="absolute bottom-3 inset-x-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex gap-2">
+        {/* Quick View & Actions Drawer (Kept Intact) */}
+        <div className="absolute bottom-3 inset-x-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex gap-2 z-20">
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(product);
-            }}
-            className="flex-1 py-2.5 bg-[#141416] hover:bg-[#87692A] text-white text-[11px] font-serif uppercase tracking-[0.18em] font-semibold rounded-xs shadow-md transition-colors flex items-center justify-center space-x-1.5"
+            onClick={handleQuickView}
+            className="flex-1 py-2.5 px-3 bg-[#141416] hover:bg-[#87692A] text-white text-[11px] font-serif uppercase tracking-[0.18em] font-semibold rounded-xs shadow-md transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+            aria-label={`Discover ${product.name}`}
           >
-            <Compass className="w-3.5 h-3.5 text-[#DFC27D]" />
+            <Eye className="w-3.5 h-3.5 text-[#DFC27D]" />
             <span>Discover Notes</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleAddToBag}
+            className={`p-2.5 border rounded-xs text-[10px] font-serif uppercase tracking-wider transition-all duration-300 flex items-center justify-center shadow-md cursor-pointer ${
+              isAdded
+                ? 'bg-[#C5A059] text-[#141416] border-[#C5A059]'
+                : 'bg-white hover:bg-[#FAF9F6] text-[#87692A] border-[#EBE8DF]'
+            }`}
+            title={isAdded ? 'Added to Bag' : 'Add to Bag'}
+            aria-label={`Add ${product.name} to bag`}
+          >
+            {isAdded ? <Check className="w-3.5 h-3.5" /> : <ShoppingBag className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>
 
-      {/* Product Content & Typography */}
-      <div className="p-5 flex flex-col flex-1 justify-between theme-bg-card border-t theme-border">
-        <div>
-          {/* Subtitle & Arabic Name */}
-          <div className="flex items-center justify-between gap-2 mb-1.5">
-            <span className="text-[10px] uppercase tracking-[0.2em] font-sans font-medium text-[#87692A]">
-              {product.subCategory}
-            </span>
-            <span className="font-arabic text-xs theme-text-muted font-normal">
-              {product.arabicName}
-            </span>
-          </div>
+      {/* Minimal Product Info Box: ONLY Product Name & Price */}
+      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between theme-bg-card border-t theme-border">
+        {/* Product Name in elegant serif font */}
+        <h3 className="font-serif text-base sm:text-lg font-bold theme-text-primary group-hover:text-[#87692A] transition-colors leading-snug">
+          {product.name}
+        </h3>
 
-          {/* Product Title */}
-          <h3 className="font-serif text-base sm:text-lg font-bold theme-text-primary group-hover:text-[#87692A] transition-colors leading-snug">
-            {product.name}
-          </h3>
-
-          {/* Key Olfactory Accords Preview */}
-          <p className="text-xs theme-text-secondary font-sans mt-2 line-clamp-2 leading-relaxed">
-            {product.topNotes.split(',')[0]} • {product.heartNotes.split(',')[0]} • {product.baseNotes.split(',')[0]}
-          </p>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {product.accordTags.slice(0, 3).map((tag, idx) => (
-              <span
-                key={idx}
-                className="text-[9px] px-2 py-0.5 rounded-xs theme-bg-secondary theme-text-secondary border theme-border"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Card Footer: Volume & Direct Enquire CTA */}
-        <div className="mt-4 pt-3 border-t theme-border flex items-center justify-between text-xs">
-          <span className="theme-text-muted font-sans text-[11px]">
-            {product.volume}
+        {/* Price Only */}
+        <div className="mt-3 pt-2.5 border-t theme-border flex items-baseline space-x-1.5">
+          <span className="font-serif text-base sm:text-lg font-bold theme-text-primary">
+            {product.price ? product.price.toFixed(3) : '45.000'}
           </span>
-
-          <button
-            type="button"
-            onClick={handleEnquire}
-            className="inline-flex items-center space-x-1 text-[#87692A] hover:theme-text-primary font-serif uppercase tracking-wider text-[11px] font-bold transition-colors"
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Enquire</span>
-          </button>
+          <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-[#87692A]">
+            KWD
+          </span>
         </div>
       </div>
     </div>

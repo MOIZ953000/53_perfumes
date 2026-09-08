@@ -34,4 +34,7 @@ export interface FragranceProduct {
   olfactoryPyramid: OlfactoryPyramid;
   accordTags: string[];
   relatedIds?: string[];
+  price: number;
+  concentrationVolume?: string;
+  conciseNotes?: string;
 }

@@ -29,6 +29,36 @@
   animation: ken-burns 22s ease-in-out infinite alternate;
 }
 
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.animate-shimmer {
+  animation: shimmer 2.2s infinite;
+}
+
+@keyframes scroll-pulse {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(160%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(160%);
+    opacity: 0;
+  }
+}
+.animate-scroll-pulse {
+  animation: scroll-pulse 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -63,6 +93,15 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-gold-dark);
+}
+
+/* Minimalist scrollbar-free utility for mobile horizontal category scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Typography Enhancements */
