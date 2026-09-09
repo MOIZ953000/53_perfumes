@@ -42,18 +42,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
   return (
     <section
       id="maison-hero"
-      className="relative min-h-[90vh] lg:min-h-screen bg-gradient-to-b from-[#FAF8F5] via-[#F7F4EE] to-[#F4F0EA] text-[#141416] overflow-hidden flex flex-col justify-between"
+      className="relative min-h-[90vh] lg:min-h-screen bg-gradient-to-b from-[#0B1220] via-[#0E1830] to-[#0A0F1C] text-[#F7F4EE] overflow-hidden flex flex-col justify-between"
     >
-      {/* 1. Subtle Luxury Ambient Lighting (Clean & Minimal) */}
+      {/* 1. Deep Navy & Gold Ambient Lighting */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div
-          className="absolute inset-0 opacity-75"
+          className="absolute inset-0 opacity-90"
           style={{
             background:
-              'radial-gradient(ellipse at 70% 45%, rgba(223, 194, 125, 0.12) 0%, rgba(244, 240, 234, 0) 65%)'
+              'radial-gradient(ellipse at 72% 45%, rgba(223, 194, 125, 0.16) 0%, rgba(10, 15, 28, 0) 65%)'
           }}
         />
-        <div className="absolute inset-0 opacity-[0.025] bg-[radial-gradient(#141416_1px,transparent_1px)] [background-size:32px_32px]" />
+        <div
+          className="absolute inset-0 opacity-60"
+          style={{
+            background:
+              'radial-gradient(ellipse at 10% 90%, rgba(37, 99, 235, 0.10) 0%, rgba(10, 15, 28, 0) 55%)'
+          }}
+        />
+        <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(#DFC27D_1px,transparent_1px)] [background-size:32px_32px]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 my-auto w-full relative z-10">
@@ -64,21 +71,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
             
             {/* Royal Tag & Arabic Calligraphy */}
             <div className="flex items-center gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] flex-shrink-0" />
-              <span className="text-[10px] sm:text-xs font-semibold tracking-[0.25em] text-[#87692A] uppercase font-sans">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DFC27D] flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs font-semibold tracking-[0.25em] text-[#DFC27D] uppercase font-sans">
                 Treppan • Kuwait • Est. 53
               </span>
-              <span className="font-arabic text-lg sm:text-xl text-[#87692A]/70 tracking-wide">
+              <span className="font-arabic text-lg sm:text-xl text-[#DFC27D]/70 tracking-wide">
                 عِطْرٌ وُلِدَ مِنَ المَاءِ
               </span>
             </div>
 
             {/* Giant Editorial Headline */}
             <div className="space-y-2 overflow-visible">
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight text-[#141416] leading-[1.04] uppercase">
+              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight text-[#F7F4EE] leading-[1.04] uppercase">
                 BORN FROM <br />
                 WATER. <br />
-                <span className="text-gold-gradient font-medium italic inline-block pr-3 tracking-normal">
+                <span
+                  className="font-medium italic inline-block pr-3 tracking-normal"
+                  style={{
+                    background: 'linear-gradient(135deg, #F5E1A4 0%, #DFC27D 40%, #C5A059 70%, #8A6A2C 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
                   <span className="inline-block pr-2.5">MADE TO</span>{' '}
                   <span className="inline-block">LINGER.</span>
                 </span>
@@ -86,7 +101,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
             </div>
 
             {/* Subtitle */}
-            <p className="text-[#52525C] text-base sm:text-lg md:text-xl font-light tracking-wide max-w-xl leading-relaxed">
+            <p className="text-[#B7BAC6] text-base sm:text-lg md:text-xl font-light tracking-wide max-w-xl leading-relaxed">
               100% alcohol-free aqua parfums with a clean touch and an unmistakable trail.
             </p>
 
@@ -95,16 +110,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
               <button
                 type="button"
                 onClick={scrollToCollection}
-                className="px-8 py-4 bg-[#141416] text-[#FAF9F6] hover:bg-[#87692A] text-xs font-serif uppercase tracking-[0.22em] font-semibold transition-all duration-300 rounded-xs shadow-lg flex items-center justify-center space-x-3 group cursor-pointer"
+                className="px-8 py-4 bg-gradient-to-r from-[#DFC27D] to-[#C5A059] text-[#141416] hover:from-[#EBD59B] hover:to-[#D4AE6C] text-xs font-serif uppercase tracking-[0.22em] font-semibold transition-all duration-300 rounded-xs shadow-lg flex items-center justify-center space-x-3 group cursor-pointer"
               >
                 <span>Discover Treppan</span>
-                <ArrowRight className="w-4 h-4 ml-1 text-[#DFC27D] group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 ml-1 text-[#141416] group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button
                 type="button"
                 onClick={openWhatsApp}
-                className="px-6 py-4 bg-transparent text-[#141416] border border-[#C5A059]/40 hover:border-[#25D366] hover:text-[#128C7E] text-xs font-serif uppercase tracking-[0.2em] font-medium transition-colors text-center flex items-center justify-center space-x-2.5 cursor-pointer rounded-xs group"
+                className="px-6 py-4 bg-transparent text-[#F7F4EE] border border-[#DFC27D]/30 hover:border-[#25D366] hover:text-[#25D366] text-xs font-serif uppercase tracking-[0.2em] font-medium transition-colors text-center flex items-center justify-center space-x-2.5 cursor-pointer rounded-xs group"
               >
                 <WhatsAppIcon className="w-4 h-4 text-[#25D366] group-hover:scale-110 transition-transform" />
                 <span>WhatsApp Enquire</span>
@@ -112,7 +127,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
             </div>
 
             {/* Interactive Flacon Selector Tabs */}
-            <div className="pt-5 border-t border-[#C5A059]/20">
+            <div className="pt-5 border-t border-[#DFC27D]/20">
               <div className="flex flex-wrap items-center gap-2.5 max-w-md">
                 {HERO_BOTTLES.map((bottle, idx) => {
                   const tabLabel =
@@ -127,8 +142,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
                       onClick={() => setActiveBottleIndex(idx)}
                       className={`px-4 sm:px-5 py-2.5 rounded-xs font-serif text-xs uppercase tracking-[0.16em] transition-all border cursor-pointer ${
                         activeBottleIndex === idx
-                          ? 'bg-white border-[#C5A059] text-[#87692A] font-bold shadow-sm'
-                          : 'bg-white/50 border-black/10 text-neutral-600 hover:text-black hover:border-black/20'
+                          ? 'bg-white/10 border-[#DFC27D] text-[#DFC27D] font-bold shadow-sm'
+                          : 'bg-white/[0.03] border-white/10 text-[#8E92A3] hover:text-[#F7F4EE] hover:border-white/25'
                       }`}
                     >
                       {tabLabel}
@@ -143,21 +158,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
           {/* Right Column: Clean Signature Flacons Presentation */}
           <div className="lg:col-span-6 relative flex flex-col items-center justify-center">
             
-            {/* Seamless Stage with the Three Bottles Standing Side-by-Side */}
+            {/* Seamless Stage: Signature Trio on Dark Navy & Gold Nugget Backdrop */}
             <div className="relative w-full max-w-lg aspect-[4/3] sm:aspect-[16/12] flex items-center justify-center group">
-              
-              {/* Clean, transparent bottle cutout */}
+
+              {/* Photographic trio on its own navy/gold set, framed as a luxury plate */}
               <img
-                src="/assets/treppan_bottles_trio_clean.png"
+                src="/assets/treppan_trio_navy_gold.png"
                 alt="Treppan Fragrance Signature Trio"
-                className="relative z-10 w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)] transform group-hover:scale-[1.02] transition-transform duration-700 ease-out cursor-pointer"
+                className="relative z-10 w-full h-full object-cover rounded-md shadow-[0_25px_60px_rgba(0,0,0,0.45)] ring-1 ring-[#DFC27D]/20 transform group-hover:scale-[1.02] transition-transform duration-700 ease-out cursor-pointer"
                 onClick={() => onSelectProduct(matchedProduct)}
               />
 
               {/* Floating Active Flacon Card Overlay (Zero Blur, Crisp Card) */}
               <div
                 onClick={() => onSelectProduct(matchedProduct)}
-                className="absolute bottom-2 inset-x-2 sm:inset-x-6 z-20 bg-white/95 px-4 py-3 rounded-xs border border-[#C5A059]/40 shadow-lg flex items-center justify-between gap-3 cursor-pointer hover:border-[#87692A] transition-all animate-fadeIn"
+                className="absolute bottom-4 inset-x-4 sm:inset-x-6 z-20 bg-white/95 px-4 py-3 rounded-xs border border-[#C5A059]/40 shadow-lg flex items-center justify-between gap-3 cursor-pointer hover:border-[#87692A] transition-all animate-fadeIn"
               >
                 <div className="flex items-center space-x-3 truncate">
                   <Sparkles className="w-4 h-4 text-[#C5A059] flex-shrink-0" />
@@ -181,7 +196,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
             </div>
 
             {/* Under-banner trust note */}
-            <div className="mt-4 flex items-center space-x-2 text-[10px] sm:text-[11px] text-[#737380] font-sans">
+            <div className="mt-4 flex items-center space-x-2 text-[10px] sm:text-[11px] text-[#8E92A3] font-sans">
               <span className="w-2 h-2 rounded-full bg-[#25D366]" />
               <span>Ultrasonic Micro-Emulsion • Handcrafted in the State of Kuwait</span>
             </div>
@@ -192,16 +207,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectProduct }) => 
       </div>
 
       {/* Bottom Sub-Nav Strip */}
-      <div className="w-full border-t border-[#C5A059]/20 bg-[#FAF8F5]/90 px-4 sm:px-8 py-3.5 relative z-10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between text-[10px] tracking-[0.25em] uppercase font-sans text-[#737380] font-medium">
+      <div className="w-full border-t border-[#DFC27D]/15 bg-[#0A0F1C]/90 px-4 sm:px-8 py-3.5 relative z-10">
+        <div className="max-w-7xl mx-auto flex items-center justify-between text-[10px] tracking-[0.25em] uppercase font-sans text-[#8E92A3] font-medium">
           <a
             href="#editorial-scroll-stage"
-            className="flex items-center space-x-1.5 hover:text-[#141416] transition-colors cursor-pointer"
+            className="flex items-center space-x-1.5 hover:text-[#F7F4EE] transition-colors cursor-pointer"
           >
             <span>Explore Collection</span>
-            <ChevronDown className="w-3.5 h-3.5 animate-bounce text-[#87692A]" />
+            <ChevronDown className="w-3.5 h-3.5 animate-bounce text-[#DFC27D]" />
           </a>
-          <span className="tracking-[0.3em] font-serif text-[#87692A] font-semibold">
+          <span className="tracking-[0.3em] font-serif text-[#DFC27D] font-semibold">
             01 / WATER-BORN LUXURY • ALCOHOL-FREE
           </span>
         </div>

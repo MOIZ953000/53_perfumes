@@ -237,7 +237,7 @@ export const EditorialBottleScroll: React.FC<EditorialBottleScrollProps> = () =>
             <div
               key={chap.id}
               ref={(el) => { cardRefs.current[idx] = el; }}
-              className={`absolute w-[84vw] sm:w-[280px] lg:w-[310px] p-5 sm:p-6 rounded-xl bg-[#121214]/95 border border-[#C5A059]/30 shadow-[0_15px_40px_rgba(0,0,0,0.7)] select-none pointer-events-none transition-colors duration-500 ${
+              className={`absolute w-[90vw] sm:w-[380px] lg:w-[430px] p-7 sm:p-8 rounded-2xl bg-[#121214]/95 border border-[#C5A059]/30 shadow-[0_15px_40px_rgba(0,0,0,0.7)] select-none pointer-events-none transition-colors duration-500 ${
                 chap.side === 'left'
                   ? 'left-4 sm:left-8 lg:left-12 xl:left-16 bottom-14 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
                   : 'right-4 sm:right-8 lg:right-12 xl:right-16 bottom-14 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
@@ -249,27 +249,27 @@ export const EditorialBottleScroll: React.FC<EditorialBottleScrollProps> = () =>
               }}
             >
               {/* Bottle Number & Name */}
-              <h3 className="font-serif text-base sm:text-lg font-bold tracking-[0.16em] text-white uppercase leading-snug mb-1">
+              <h3 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold tracking-[0.16em] text-white uppercase leading-snug mb-2">
                 <span style={{ color: chap.accentColor }}>{chap.bottleNumber}</span>
                 <span className="text-white/30 mx-2 font-light">/</span>
                 <span>{chap.name}</span>
               </h3>
 
               {/* Concentration line */}
-              <p className="text-[10.5px] sm:text-[11px] font-sans tracking-[0.18em] uppercase text-[#DFC27D] font-medium mb-3">
+              <p className="text-sm sm:text-base font-sans tracking-[0.18em] uppercase text-[#DFC27D] font-medium mb-4">
                 {chap.concentration}
               </p>
 
               {/* Minimal Accent Divider with generous breathing room */}
-              <div className="w-8 h-[1px] bg-white/15 my-3" />
+              <div className="w-10 h-[1px] bg-white/15 my-4" />
 
               {/* 3-Word Accord */}
-              <p className="text-xs font-serif tracking-wider text-neutral-200 font-medium mb-1.5">
+              <p className="text-base sm:text-lg font-serif tracking-wider text-neutral-200 font-medium mb-2">
                 {chap.accords}
               </p>
 
               {/* Short Single-Sentence Tagline */}
-              <p className="text-xs font-serif italic text-neutral-400 font-light leading-relaxed">
+              <p className="text-base sm:text-lg font-serif italic text-neutral-400 font-light leading-relaxed">
                 "{chap.tagline}"
               </p>
             </div>
