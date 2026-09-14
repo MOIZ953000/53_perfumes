@@ -122,36 +122,63 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       const shadow = shadowMeshRef.current;
       const container = containerRef.current;
 
-      // Responsive mobile scaling factor
-      const isMobile = (container?.clientWidth || window.innerWidth) < 768;
-      const mobileFactor = isMobile ? 0.78 : 1.0;
+      // Responsive layout and scaling metrics
+      const containerWidth = container?.clientWidth || window.innerWidth;
+      const isPhone = containerWidth < 640;
+      const isMobile = containerWidth < 768;
+      const mobileFactor = isMobile ? 0.84 : 1.0;
 
-      // Refined Camera Easing: smooth spherical/cubic camera trajectory across chapters with plenty of breathing room
+      // Vertical center offset (elevate slightly on mobile phones so bottle doesn't clash with bottom card)
+      const yCenter = isPhone ? 0.22 : 0;
+
+      // Responsive lateral shift per product (asymmetric side-shifting):
+      // - Product 01 ("ONLY YOU"): Textbox on LEFT -> shift bottle RIGHT (+1.46)
+      // - Product 02 ("GLORIOUS"): Textbox on RIGHT -> shift bottle LEFT (-1.46)
+      // - Product 03 ("BLVGARI AQUA"): Textbox on LEFT -> shift bottle RIGHT (+1.46)
+      // Scaled smoothly for tablet, and centered on mobile phones to prevent viewport edge clipping
+      let lateralShift = 1.46;
+      if (isPhone) {
+        lateralShift = 0;
+      } else if (containerWidth < 768) {
+        lateralShift = 0.85;
+      } else if (containerWidth < 1024) {
+        lateralShift = 1.18;
+      } else if (containerWidth < 1280) {
+        lateralShift = 1.35;
+      } else {
+        lateralShift = 1.46;
+      }
+
+      // Increased active bottle scale (~25% to 35% larger impactful presence)
+      const activeScale = 1.16;   // ~35% scale increase from baseline 0.86
+      const activeScale3 = 1.20;  // ~33% scale increase from baseline 0.90
+
+      // Refined Camera trajectory closer to bottles for crisp, impactful presence
       let baseCamX = 0;
-      let baseCamY = 0.28;
-      let baseCamZ = isMobile ? 6.8 : 5.9;
+      let baseCamY = 0.28 + yCenter * 0.5;
+      let baseCamZ = isMobile ? 6.3 : 5.4;
 
-      if (p <= 0.33) {
+      if (p <= 0.34) {
         // Chapter 1: intimate macro -> stately frontal
-        const t1 = clamp01(p / 0.33);
+        const t1 = clamp01(p / 0.34);
         const e1 = easeInOutCubic(t1);
-        baseCamX = lerp(0.03, 0.0, e1);
-        baseCamY = lerp(0.22, 0.28, e1);
-        baseCamZ = lerp(isMobile ? 6.4 : 5.5, isMobile ? 6.8 : 5.9, e1);
-      } else if (p <= 0.66) {
+        baseCamX = lerp(0.02, 0.0, e1);
+        baseCamY = lerp(0.24 + yCenter * 0.5, 0.28 + yCenter * 0.5, e1);
+        baseCamZ = lerp(isMobile ? 6.0 : 5.2, isMobile ? 6.3 : 5.4, e1);
+      } else if (p <= 0.68) {
         // Chapter 2: dynamic 3/4 sculptural viewpoint
-        const t2 = clamp01((p - 0.33) / 0.33);
+        const t2 = clamp01((p - 0.34) / 0.34);
         const e2 = easeInOutCubic(t2);
-        baseCamX = lerp(0.0, 0.12, e2);
-        baseCamY = lerp(0.28, 0.32, e2);
-        baseCamZ = lerp(isMobile ? 6.8 : 5.9, isMobile ? 7.0 : 6.1, e2);
+        baseCamX = lerp(0.0, 0.06, e2);
+        baseCamY = lerp(0.28 + yCenter * 0.5, 0.32 + yCenter * 0.5, e2);
+        baseCamZ = lerp(isMobile ? 6.3 : 5.4, isMobile ? 6.5 : 5.6, e2);
       } else {
         // Chapter 3: elevated majestic hero vantage point
-        const t3 = clamp01((p - 0.66) / 0.34);
+        const t3 = clamp01((p - 0.68) / 0.32);
         const e3 = easeInOutCubic(t3);
-        baseCamX = lerp(0.12, -0.06, e3);
-        baseCamY = lerp(0.32, 0.36, e3);
-        baseCamZ = lerp(isMobile ? 7.0 : 6.1, isMobile ? 6.7 : 5.8, e3);
+        baseCamX = lerp(0.06, -0.02, e3);
+        baseCamY = lerp(0.32 + yCenter * 0.5, 0.36 + yCenter * 0.5, e3);
+        baseCamZ = lerp(isMobile ? 6.5 : 5.6, isMobile ? 6.2 : 5.3, e3);
       }
       baseCameraPosRef.current.set(baseCamX, baseCamY, baseCamZ);
 
@@ -160,51 +187,66 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       const nudgeY = pointerDeltaRotationRef.current.y * 0.5;
 
       // =========================================================================
-      // CHAPTER 1: 0% – 33% (Royal Oud Noir)
-      // Intimate close-up dramatic angle -> zooms out to proud frontal -> 180°–360° axial spin
+      // CHAPTER 1: 0% – 38% (ONLY YOU)
+      // Emerges centered under headline (0% -> 12%), then smoothly glides
+      // into the open right zone (+lateralShift: +1.2 to +1.8) as Card 01 appears on LEFT
       // =========================================================================
       if (p <= 0.38) {
         g0.visible = true;
 
-        if (p <= 0.18) {
-          // Zoom out from dramatic close-up macro angle to proud frontal
-          const tZoom = clamp01(p / 0.18);
+        if (p <= 0.12) {
+          // Subtle centered emergence sitting below the centered headline
+          const tZoom = clamp01(p / 0.12);
           const eZoom = easeInOutCubic(tZoom);
 
-          // Start close-up (z: 1.1, y: -0.2) showing nozzle & gold collar
           g0.position.set(
-            lerp(0.18, 0, eZoom),
-            lerp(-0.16, 0, eZoom),
-            lerp(0.95, 0, eZoom)
+            0,
+            lerp(-0.55 + yCenter, yCenter, eZoom),
+            lerp(0.25, 0, eZoom)
           );
-          g0.scale.setScalar(lerp(1.15, 0.86, eZoom) * mobileFactor);
-          // Dramatic pitch tilt (x: 0.18) and axial spin (-0.6 rad to full 360° spin)
+          g0.scale.setScalar(lerp(activeScale * 0.9, activeScale, eZoom) * mobileFactor);
           g0.rotation.set(
-            lerp(0.18, 0.02, eZoom) + nudgeX,
-            lerp(-0.6, Math.PI * 2, eZoom) + nudgeY,
-            lerp(0.06, 0, eZoom)
+            lerp(0.06, 0.02, eZoom) + nudgeX,
+            lerp(Math.PI * 1.92, Math.PI * 2, eZoom) + nudgeY,
+            lerp(0.03, 0, eZoom)
           );
-        } else if (p <= 0.28) {
-          // Stable proud frontal presentation with gentle floating breathing
-          g0.position.set(0, Math.sin(p * 20) * 0.015, 0);
-          g0.scale.setScalar(0.86 * mobileFactor);
+        } else if (p <= 0.24) {
+          // Smooth fluid transition from center (0) to RIGHT (+lateralShift) as left card fades in
+          const tShift = clamp01((p - 0.12) / 0.12);
+          const eShift = easeInOutCubic(tShift);
+          const posX = lerp(0, +lateralShift, eShift);
+
+          g0.position.set(
+            posX,
+            yCenter + Math.sin(p * 14) * 0.01,
+            0
+          );
+          g0.scale.setScalar(activeScale * mobileFactor);
           g0.rotation.set(
             0.02 + nudgeX,
-            Math.PI * 2 + (p - 0.18) * 0.5 + nudgeY,
+            Math.PI * 2 + (p - 0.12) * 0.35 + nudgeY,
+            0
+          );
+        } else if (p <= 0.32) {
+          // Extended settled dwell phase: holds right stage alongside Story Card 01 on the left
+          g0.position.set(+lateralShift, yCenter + Math.sin(p * 14) * 0.01, 0);
+          g0.scale.setScalar(activeScale * mobileFactor);
+          g0.rotation.set(
+            0.02 + nudgeX,
+            Math.PI * 2 + (p - 0.12) * 0.35 + nudgeY,
             0
           );
         } else {
-          // Exit transition (0.28 -> 0.38): glides/fades out with rotation-blur exit
-          const tExit = clamp01((p - 0.28) / 0.10);
+          // Unhurried exit transition (0.32 -> 0.38) gliding into right background depth
+          const tExit = clamp01((p - 0.32) / 0.06);
           const eExit = easeInQuad(tExit);
 
           g0.position.set(
-            lerp(0, -3.8, eExit),
-            lerp(0, -0.2, eExit),
+            lerp(+lateralShift, +lateralShift + 2.4, eExit),
+            lerp(yCenter, yCenter - 0.2, eExit),
             lerp(0, -2.6, eExit)
           );
-          g0.scale.setScalar(lerp(0.86, 0.30, eExit) * mobileFactor);
-          // High-velocity axial spin simulating motion blur
+          g0.scale.setScalar(lerp(activeScale, 0.30, eExit) * mobileFactor);
           g0.rotation.set(
             0.02 + nudgeX,
             Math.PI * 2 + 0.05 + eExit * Math.PI * 2.2 + nudgeY,
@@ -216,49 +258,50 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       }
 
       // =========================================================================
-      // CHAPTER 2: 33% – 66% (Ruthless Aqua)
-      // Flacon 2 orbits in from side/depth, catches rim light, stabilizes with floating tilt
+      // CHAPTER 2: 30% – 72% (GLORIOUS)
+      // Swoops in from depth into the open LEFT zone (-lateralShift: -1.2 to -1.8)
+      // as Card 02 sits on the RIGHT
       // =========================================================================
-      if (p >= 0.28 && p <= 0.70) {
+      if (p >= 0.30 && p <= 0.72) {
         g1.visible = true;
 
-        if (p < 0.42) {
-          // Orbit in from right side & depth
-          const tIn = clamp01((p - 0.28) / 0.14);
+        if (p < 0.44) {
+          // Orbit/glide in smoothly from left depth to -lateralShift
+          const tIn = clamp01((p - 0.30) / 0.14);
           const eIn = easeOutQuad(tIn);
 
           g1.position.set(
-            lerp(+4.0, 0, eIn),
-            lerp(-0.35, 0, eIn),
+            lerp(-lateralShift - 2.5, -lateralShift, eIn),
+            lerp(-0.35 + yCenter, yCenter, eIn),
             lerp(-2.8, 0, eIn)
           );
-          g1.scale.setScalar(lerp(0.30, 0.86, eIn) * mobileFactor);
+          g1.scale.setScalar(lerp(0.30, activeScale, eIn) * mobileFactor);
           g1.rotation.set(
             lerp(0.24, 0.06, eIn) + nudgeX,
             lerp(Math.PI * 1.6, 0.15, eIn) + nudgeY,
             lerp(0.12, 0, eIn)
           );
-        } else if (p <= 0.58) {
-          // Stabilized with gentle floating tilt
-          const breath = Math.sin((p - 0.42) * 35) * 0.035;
-          g1.position.set(0, breath, 0);
-          g1.scale.setScalar(0.86 * mobileFactor);
+        } else if (p <= 0.64) {
+          // Extended settled dwell phase: holds left stage cleanly opposite right textbox
+          const breath = Math.sin((p - 0.44) * 22) * 0.02;
+          g1.position.set(-lateralShift, breath + yCenter, 0);
+          g1.scale.setScalar(activeScale * mobileFactor);
           g1.rotation.set(
-            0.06 + Math.cos((p - 0.42) * 28) * 0.015 + nudgeX,
-            0.15 + (p - 0.42) * 0.65 + nudgeY,
+            0.06 + Math.cos((p - 0.44) * 18) * 0.01 + nudgeX,
+            0.15 + (p - 0.44) * 0.45 + nudgeY,
             0
           );
         } else {
-          // Exit transition (0.58 -> 0.70): glides out to the right/depth
-          const tExit2 = clamp01((p - 0.58) / 0.12);
+          // Unhurried exit transition (0.64 -> 0.72) gliding away into left depth
+          const tExit2 = clamp01((p - 0.64) / 0.08);
           const eExit2 = easeInQuad(tExit2);
 
           g1.position.set(
-            lerp(0, +3.8, eExit2),
-            lerp(0, -0.2, eExit2),
+            lerp(-lateralShift, -lateralShift - 2.5, eExit2),
+            lerp(yCenter, yCenter - 0.2, eExit2),
             lerp(0, -2.5, eExit2)
           );
-          g1.scale.setScalar(lerp(0.86, 0.30, eExit2) * mobileFactor);
+          g1.scale.setScalar(lerp(activeScale, 0.30, eExit2) * mobileFactor);
           g1.rotation.set(
             lerp(0.06, -0.15, eExit2) + nudgeX,
             lerp(0.25, Math.PI * 1.5, eExit2) + nudgeY,
@@ -268,9 +311,9 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
 
         // Lighting choreography: catches rim light across gold & amber facets
         if (rimLight) {
-          const rimT = clamp01((p - 0.35) / 0.22);
+          const rimT = clamp01((p - 0.38) / 0.24);
           const rimFactor = Math.sin(rimT * Math.PI);
-          rimLight.intensity = lerp(3.2, 5.4, rimFactor);
+          rimLight.intensity = lerp(2.8, 4.8, rimFactor);
           rimLight.position.set(
             lerp(-3.5, -2.2, rimFactor),
             lerp(2.8, 3.6, rimFactor),
@@ -282,48 +325,49 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       }
 
       // =========================================================================
-      // CHAPTER 3: 66% – 100% (Bleu De Aqua)
-      // Sweeps into focus with elevated hero presentation, subtle tilt, celebratory light sweep
+      // CHAPTER 3: 64% – 100% (BLVGARI AQUA)
+      // Glides into open RIGHT zone (+lateralShift: +1.2 to +1.8) opposite Card 03 on the LEFT,
+      // then LOCKED in place through 100%
       // =========================================================================
-      if (p >= 0.60) {
+      if (p >= 0.64) {
         g2.visible = true;
 
-        if (p < 0.76) {
-          // Elevated hero sweep into center focus
-          const tIn3 = clamp01((p - 0.60) / 0.16);
+        if (p < 0.80) {
+          // Unhurried controlled glide into right focus (easeOutQuad)
+          const tIn3 = clamp01((p - 0.64) / 0.16);
           const eIn3 = easeOutQuad(tIn3);
 
           g2.position.set(
-            lerp(-2.2, 0, eIn3),
-            lerp(+2.8, 0.04, eIn3),
+            lerp(+lateralShift + 2.5, +lateralShift, eIn3),
+            lerp(+2.4 + yCenter, 0.04 + yCenter, eIn3),
             lerp(-2.8, 0, eIn3)
           );
-          g2.scale.setScalar(lerp(0.30, 0.90, eIn3) * mobileFactor);
+          g2.scale.setScalar(lerp(0.30, activeScale3, eIn3) * mobileFactor);
           g2.rotation.set(
             lerp(0.26, 0.04, eIn3) + nudgeX,
             lerp(-Math.PI * 1.4, 0.1, eIn3) + nudgeY,
             0
           );
         } else {
-          // Elevated hero presentation: majestic floating and subtle noble tilt
-          const breath3 = Math.sin((p - 0.76) * 22) * 0.025;
-          g2.position.set(0, 0.04 + breath3, 0);
-          g2.scale.setScalar(0.90 * mobileFactor);
+          // Elevated hero presentation: LOCKED at right stage (+lateralShift), fully visible through 100%
+          const breath3 = Math.sin((p - 0.80) * 16) * 0.012;
+          g2.position.set(+lateralShift, 0.04 + breath3 + yCenter, 0);
+          g2.scale.setScalar(activeScale3 * mobileFactor);
           g2.rotation.set(
-            0.04 + Math.sin((p - 0.76) * 18) * 0.012 + nudgeX,
-            0.1 + (p - 0.76) * 0.75 + nudgeY,
+            0.04 + Math.sin((p - 0.80) * 12) * 0.008 + nudgeX,
+            0.1 + (p - 0.80) * 0.45 + nudgeY,
             0
           );
         }
 
         // Celebratory light sweep across cobalt glass & metallic crest
-        const sweepT = clamp01((p - 0.68) / 0.32);
+        const sweepT = clamp01((p - 0.70) / 0.30);
         if (keyLight) {
           keyLight.position.x = lerp(-4.0, +4.5, sweepT);
-          keyLight.intensity = lerp(2.6, 4.2, Math.sin(sweepT * Math.PI));
+          keyLight.intensity = lerp(2.6, 3.8, Math.sin(sweepT * Math.PI));
         }
         if (fillLight) {
-          fillLight.intensity = lerp(1.3, 2.2, Math.sin(sweepT * Math.PI));
+          fillLight.intensity = lerp(1.4, 2.0, Math.sin(sweepT * Math.PI));
         }
       } else {
         g2.visible = false;
@@ -332,17 +376,19 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       // Ground contact shadow follow
       if (shadow) {
         let activePos = 0;
-        if (p <= 0.33) activePos = g0.position.x * 0.7;
-        else if (p <= 0.66) activePos = g1.position.x * 0.7;
-        else activePos = g2.position.x * 0.7;
+        if (p <= 0.35) activePos = g0.position.x;
+        else if (p <= 0.68) activePos = g1.position.x;
+        else activePos = g2.position.x;
         shadow.position.x = activePos;
+        shadow.position.y = -1.45 + yCenter;
+        shadow.scale.setScalar(1.25 * (activeScale / 0.86));
       }
 
       // =========================================================================
-      // 3D LIGHT SWEEP & SHIMMER INTERACTION (Step 5 Polish)
-      // Grazing specular caustics pass across bottle facets at chapter pauses (~16%, ~50%, ~83%)
+      // 3D LIGHT SWEEP & SHIMMER INTERACTION
+      // Grazing specular caustics pass across bottle facets at chapter pauses (~18%, ~54%, ~88%)
       // =========================================================================
-      const pausePoints = [0.16, 0.50, 0.83];
+      const pausePoints = [0.18, 0.54, 0.88];
       let maxPauseFactor = 0;
       let closestPauseIndex = 0;
 
@@ -367,7 +413,8 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
           specularLight.intensity = maxPauseFactor * 5.4;
           const currentPauseP = pausePoints[closestPauseIndex];
           const sweepProgress = (p - currentPauseP) / 0.075; // -1 to +1
-          specularLight.position.set(sweepProgress * 2.2, 0.55, 2.0);
+          const activeBottleX = closestPauseIndex === 0 ? g0.position.x : (closestPauseIndex === 1 ? g1.position.x : g2.position.x);
+          specularLight.position.set(activeBottleX + sweepProgress * 1.8, 0.55 + yCenter, 2.0);
 
           // Color nuance: warm gold shimmer for Oud Noir & Ruthless, sapphire-gold for Bleu De Aqua
           if (closestPauseIndex === 2) {
@@ -385,8 +432,9 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
         if (maxPauseFactor > 0.01) {
           flareSprite.visible = true;
           (flareSprite.material as THREE.SpriteMaterial).opacity = maxPauseFactor * 0.92;
-          const shoulderX = closestPauseIndex === 1 ? 0.20 : 0.16;
-          flareSprite.position.set(shoulderX, 0.62, 0.45);
+          const shoulderX = closestPauseIndex === 1 ? -0.20 : 0.20;
+          const activeBottleX = closestPauseIndex === 0 ? g0.position.x : (closestPauseIndex === 1 ? g1.position.x : g2.position.x);
+          flareSprite.position.set(activeBottleX + shoulderX, 0.62 + yCenter, 0.45);
         } else {
           flareSprite.visible = false;
         }
@@ -394,8 +442,8 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
 
       // Chapter notification
       let newChapter = 0;
-      if (p >= 0.66) newChapter = 2;
-      else if (p >= 0.33) newChapter = 1;
+      if (p >= 0.68) newChapter = 2;
+      else if (p >= 0.34) newChapter = 1;
 
       if (newChapter !== currentChapterRef.current) {
         currentChapterRef.current = newChapter;
@@ -551,7 +599,7 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       // 2. Camera: 40 deg FOV, ideal for flacon proportions with comfortable breathing room
       const isMobile = width < 768;
       const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-      camera.position.set(0, 0.28, isMobile ? 6.6 : 5.6);
+      camera.position.set(0, 0.28, isMobile ? 6.3 : 5.4);
       camera.lookAt(0, 0, 0);
       cameraRef.current = camera;
 
@@ -585,11 +633,11 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       scene.environment = pmremGenerator.fromScene(roomEnv, 0.04).texture;
       roomEnv.dispose();
 
-      // 5. PBR Studio Lighting Rig
-      const ambientLight = new THREE.AmbientLight(0xfff3d6, 0.85);
+      // 5. PBR Studio Lighting Rig calibrated for signature cream canvas
+      const ambientLight = new THREE.AmbientLight(0xfffbf2, 0.95);
       scene.add(ambientLight);
 
-      const keyLight = new THREE.DirectionalLight(0xfff8ee, 2.6);
+      const keyLight = new THREE.DirectionalLight(0xfffcf6, 2.6);
       keyLight.position.set(3.5, 4.5, 3.8);
       keyLight.castShadow = true;
       keyLight.shadow.mapSize.width = 1024;
@@ -598,12 +646,12 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       scene.add(keyLight);
       keyLightRef.current = keyLight;
 
-      const rimLight = new THREE.DirectionalLight(0xdfc27d, 3.2);
+      const rimLight = new THREE.DirectionalLight(0xdfc27d, 2.8);
       rimLight.position.set(-3.5, 2.8, -3.5);
       scene.add(rimLight);
       rimLightRef.current = rimLight;
 
-      const fillLight = new THREE.DirectionalLight(0xe5f0ff, 1.3);
+      const fillLight = new THREE.DirectionalLight(0xf5f8ff, 1.4);
       fillLight.position.set(-3.0, 1.2, 2.8);
       scene.add(fillLight);
       fillLightRef.current = fillLight;
@@ -643,26 +691,26 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
       scene.add(flareSprite);
       flareSpriteRef.current = flareSprite;
 
-      // 6. Ground Contact Shadow Disc
+      // 6. Ground Contact Shadow Disc (gentle, realistic studio contact shadow on cream)
       const shadowCanvas = document.createElement('canvas');
       shadowCanvas.width = 256;
       shadowCanvas.height = 256;
       const ctx = shadowCanvas.getContext('2d');
       if (ctx) {
-        const gradient = ctx.createRadialGradient(128, 128, 10, 128, 128, 120);
-        gradient.addColorStop(0, 'rgba(20, 20, 24, 0.45)');
-        gradient.addColorStop(0.35, 'rgba(30, 25, 20, 0.22)');
-        gradient.addColorStop(0.7, 'rgba(197, 160, 89, 0.08)');
+        const gradient = ctx.createRadialGradient(128, 128, 12, 128, 128, 115);
+        gradient.addColorStop(0, 'rgba(40, 32, 22, 0.28)');       // Gentle contact shadow directly under base
+        gradient.addColorStop(0.35, 'rgba(55, 45, 32, 0.14)');    // Soft realistic penumbra
+        gradient.addColorStop(0.70, 'rgba(180, 150, 100, 0.04)'); // Subtle warm dispersion
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, 256, 256);
       }
       const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
-      const shadowGeo = new THREE.PlaneGeometry(3.4, 3.4);
+      const shadowGeo = new THREE.PlaneGeometry(3.2, 3.2);
       const shadowMat = new THREE.MeshBasicMaterial({
         map: shadowTexture,
         transparent: true,
-        opacity: 0.85,
+        opacity: 0.65,
         depthWrite: false
       });
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
@@ -778,7 +826,8 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
           camera.position.x = baseCameraPosRef.current.x + parallaxCurrentRef.current.x;
           camera.position.y = baseCameraPosRef.current.y + parallaxCurrentRef.current.y;
           camera.position.z = baseCameraPosRef.current.z;
-          camera.lookAt(0, 0.06, 0);
+          const lookY = 0.06 + (containerRef.current && containerRef.current.clientWidth < 640 ? 0.22 : 0);
+          camera.lookAt(0, lookY, 0);
         }
 
         // Shimmer twinkle on active optical flare sprite
@@ -914,18 +963,18 @@ export const ThreeBottleCanvas = forwardRef<BottleSceneController, ThreeBottleCa
         ref={containerRef}
         className={`relative w-full h-full flex items-center justify-center select-none overflow-hidden ${className}`}
       >
-        {/* Subtle Ambient Studio Halo (only in scroll mode; omitted in interactive mode for pure transparency) */}
+        {/* Subtle Ambient Studio Halo on Cream Canvas */}
         {mode === 'scroll' && (
           <div
-            className="absolute inset-0 pointer-events-none transition-colors duration-700 opacity-60"
+            className="absolute inset-0 pointer-events-none transition-opacity duration-700 opacity-40"
             style={{
-              background: `radial-gradient(circle at 50% 55%, ${
+              background: `radial-gradient(circle at 50% 52%, ${
                 currentBottleIndex === 0
-                  ? 'rgba(197, 160, 89, 0.20)'
+                  ? 'rgba(212, 175, 55, 0.12)'
                   : currentBottleIndex === 1
-                  ? 'rgba(223, 194, 125, 0.25)'
-                  : 'rgba(56, 130, 214, 0.20)'
-              } 0%, transparent 68%)`
+                  ? 'rgba(96, 165, 250, 0.08)'
+                  : 'rgba(197, 160, 89, 0.12)'
+              } 0%, transparent 65%)`
             }}
           />
         )}

@@ -38,10 +38,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   // Get 3 related products
-  const related = (product.relatedIds || [])
-    .map((id) => PRODUCTS.find((p) => p.id === id))
-    .filter((p): p is FragranceProduct => Boolean(p))
-    .slice(0, 3);
+  const related = (
+    product.relatedIds && product.relatedIds.length > 0
+      ? product.relatedIds.map((id) => PRODUCTS.find((p) => p.id === id)).filter((p): p is FragranceProduct => Boolean(p))
+      : PRODUCTS.filter((p) => p.id !== product.id)
+  ).slice(0, 3);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
@@ -109,24 +110,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </span>
                 <div className="flex items-baseline space-x-1.5">
                   <span className="font-serif text-lg font-bold theme-text-primary">
-                    {product.price ? product.price.toFixed(3) : '45.000'}
-                  </span>
-                  <span className="text-[10px] uppercase font-sans font-bold text-[#87692A]">
-                    KWD
+                    {product.price}
                   </span>
                 </div>
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold theme-text-primary mt-1">
-                {product.name}
+                {product.title || product.name}
               </h2>
-              <p className="text-xs theme-text-muted font-sans italic mt-0.5">
-                "{product.subtitle}"
-              </p>
+              {product.subtitle && (
+                <p className="text-xs theme-text-muted font-sans italic mt-0.5">
+                  "{product.subtitle}"
+                </p>
+              )}
             </div>
 
             {/* Description */}
             <p className="text-sm theme-text-secondary leading-relaxed font-light">
-              {product.description}
+              {product.shortDescription || product.description || product.notes}
             </p>
 
             {/* The Olfactory Pyramid */}
@@ -143,7 +143,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <span>Top Notes</span>
                 </div>
                 <p className="theme-text-secondary pl-3 leading-relaxed font-normal">
-                  {product.olfactoryPyramid.topNotes}
+                  {product.olfactoryPyramid?.topNotes || product.topNotes || product.notes}
                 </p>
               </div>
 
@@ -154,7 +154,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <span>Heart Notes</span>
                 </div>
                 <p className="theme-text-secondary pl-3 leading-relaxed font-normal">
-                  {product.olfactoryPyramid.heartNotes}
+                  {product.olfactoryPyramid?.heartNotes || product.heartNotes || product.notes}
                 </p>
               </div>
 
@@ -165,7 +165,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <span>Base Notes</span>
                 </div>
                 <p className="theme-text-secondary pl-3 leading-relaxed font-normal">
-                  {product.olfactoryPyramid.baseNotes}
+                  {product.olfactoryPyramid?.baseNotes || product.baseNotes || product.notes}
                 </p>
               </div>
             </div>
@@ -177,7 +177,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <span>Molecular Formulation & Sillage</span>
               </h4>
               <p className="text-xs theme-text-secondary leading-relaxed font-light">
-                {product.formulationStory}
+                {product.formulationStory || product.shortDescription || product.description || 'Formulated with ultra-pure essential oil micro-emulsion technology for 24-hour enduring velvet sillage.'}
               </p>
             </div>
 
@@ -218,7 +218,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         {rel.name}
                       </p>
                       <p className="text-[9px] theme-text-muted truncate">
-                        {rel.subCategory.split('•')[0]}
+                        {rel.subCategory ? rel.subCategory.split('•')[0] : rel.category}
                       </p>
                     </button>
                   ))}

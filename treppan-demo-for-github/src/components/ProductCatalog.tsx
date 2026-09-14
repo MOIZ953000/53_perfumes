@@ -13,27 +13,29 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   onSelectProduct,
   onExploreFullCollection,
 }) => {
-  // Display ONLY the first 4 products on the homepage section
+  // Display the first 4 creations on the Section 4 showcase
   const displayedProducts = PRODUCTS.slice(0, 4);
 
   return (
-    <section id="collection" className="py-20 sm:py-28 theme-bg-primary border-t theme-border relative transition-colors duration-300">
+    <section id="collections" className="py-20 sm:py-28 bg-[#FAF8F5] border-t border-[#EAE6DE] relative transition-colors duration-300 scroll-mt-20">
+      <span id="collection" className="sr-only" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto mb-14 sm:mb-16">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full theme-bg-secondary border theme-border-gold">
+        {/* Section Header: Haute Perfumerie Elegance */}
+        <div className="text-center space-y-3.5 max-w-3xl mx-auto mb-14 sm:mb-16">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-white/80 border border-[#C5A059]/40 shadow-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-[#87692A]" />
             <span className="text-[10px] uppercase tracking-[0.25em] text-[#87692A] font-bold font-sans">
               Royal Olfactory Curation
             </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#87692A]" />
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold theme-text-primary tracking-tight">
+          <h2 className="font-serif font-normal text-neutral-900 text-4xl sm:text-5xl md:text-6xl tracking-tight">
             The Haute <span className="italic font-normal text-[#87692A]">Collections</span>
           </h2>
 
-          <p className="theme-text-secondary text-sm sm:text-base font-light leading-relaxed max-w-lg mx-auto">
+          <p className="text-neutral-600 font-sans max-w-2xl mx-auto text-sm sm:text-base leading-relaxed font-light">
             100% alcohol-free Aqua Parfums, 40-year vintage aged Dehenal Oud, and authentic Himalayan Kasturi attars crafted for royalty.
           </p>
         </div>
@@ -54,7 +56,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           <button
             type="button"
             onClick={onExploreFullCollection}
-            className="group relative inline-flex items-center space-x-3 px-8 sm:px-10 py-4 bg-[#141416] hover:bg-[#87692A] text-[#FAF9F6] border border-[#87692A]/60 hover:border-[#87692A] text-xs font-serif uppercase tracking-[0.25em] font-semibold rounded-xs shadow-md hover:shadow-gold-glow transition-all duration-300 cursor-pointer"
+            className="group relative inline-flex items-center space-x-3 px-8 sm:px-10 py-4 bg-[#141416] hover:bg-[#87692A] text-[#FAF9F6] border border-[#87692A]/50 hover:border-[#87692A] text-xs font-serif uppercase tracking-[0.25em] font-semibold rounded-xs shadow-md hover:shadow-[0_10px_25px_-5px_rgba(135,105,42,0.4)] transition-all duration-300 cursor-pointer"
             aria-label="Explore Full Collection"
           >
             <span>Explore Full Collection</span>
@@ -66,4 +68,4 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     </section>
   );
 };
-
+export default ProductCatalog;
